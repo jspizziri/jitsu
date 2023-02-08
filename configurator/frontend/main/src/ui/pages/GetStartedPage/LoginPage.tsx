@@ -8,6 +8,7 @@ export default function LoginPage() {
       oauthSupport={services.userService.getLoginFeatures().oauth}
       ssoAuthLink={services.userService.getSSOAuthLink()}
       login={true}
+      passwordLogin={services.userService.getLoginFeatures().password}
       useCloudHero={services.userService.getLoginFeatures().oauth}
     />
   )

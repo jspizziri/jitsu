@@ -3,6 +3,7 @@ import logo from "icons/logo.svg"
 import { useHistory } from "react-router-dom"
 import { LoginForm } from "./LoginForm"
 import { SignupForm } from "./SignupForm"
+import { SSOAuthLink } from "../../../lib/services/UserService"
 
 /**
  * This component <GetStartedPage /> is used for both login and signup purposes. Since layout is very similar
@@ -16,7 +17,7 @@ export type GetStartedPageProps = {
   /**
    * Link for SSO Authorization
    */
-  ssoAuthLink: string
+  ssoAuthLink?: SSOAuthLink
   /**
    * Is this a login page or signup page?
    */
@@ -28,6 +29,10 @@ export type GetStartedPageProps = {
    * false - Self-Hosted
    */
   useCloudHero: boolean
+  /**
+   * If password login is enabled
+   */
+  passwordLogin: boolean
 }
 
 function GitHubLogo() {
@@ -149,7 +154,7 @@ export default function GetStartedPage(props: GetStartedPageProps) {
         <a target="_blank" href="https://jitsu.com" className="block mb-6 lg:hidden">
           <img className="mt-8 h-8" src={logo} />
         </a>
-        {props.login ? <LoginForm supportOauth={props.oauthSupport} ssoAuthLink={props.ssoAuthLink} /> : <SignupForm />}
+        {props.login ? <LoginForm passwordLogin={props.passwordLogin} supportOauth={props.oauthSupport} ssoAuthLink={props.ssoAuthLink} /> : <SignupForm />}
       </div>
     </div>
   )

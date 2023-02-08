@@ -25,6 +25,12 @@ export interface SetupUserProps {
   emailOptout?: boolean
 }
 
+export type SSOAuthLink = string | {
+  title?: string
+  onClick: () => Promise<void>
+  link?: string
+}
+
 export interface UserService {
   /**
    * Logs in user. On success user must reload
@@ -36,7 +42,7 @@ export interface UserService {
 
   getLoginFeatures(): LoginFeatures
 
-  getSSOAuthLink(): string
+  getSSOAuthLink(): SSOAuthLink
 
   /**
    * Initiates google login. Returns promise on email of the user . On success user must reload
@@ -115,4 +121,16 @@ export interface UserService {
    * Returns a token which can be user by external services to perform authorization.
    */
   getIdToken(): Promise<string>
+
+  /**
+   * If method returns a value, all login actions will be delegated to the external login button.
+   * Also, it means:
+   *  - no login form will be shown (just button)
+   *  - no registration
+   *  - user won't be able to change password or email
+   */
+  // externalSSOConfig(): {
+  //   loginButtonTitle: string
+  //   onClick: () => void
+  // } | undefined
 }

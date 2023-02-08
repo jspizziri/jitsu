@@ -12,10 +12,11 @@ import { getErrorPayload } from "../../../lib/services/analytics"
 import { useServices } from "../../../hooks/useServices"
 import ApplicationServices from "../../../lib/services/ApplicationServices"
 import UserOutlined from "@ant-design/icons/lib/icons/UserOutlined"
+import { SSOAuthLink } from "../../../lib/services/UserService"
 
 const SSO_ERROR_LS_KEY = "sso_error"
 
-export function LoginForm({ supportOauth, ssoAuthLink }) {
+export function LoginForm({ supportOauth, ssoAuthLink, passwordLogin }: { supportOauth: boolean; ssoAuthLink: SSOAuthLink; passwordLogin: boolean }) {
   const services = useServices()
   const [loading, setLoading] = useState(false)
   const history = useHistory()
@@ -113,53 +114,58 @@ export function LoginForm({ supportOauth, ssoAuthLink }) {
         layout="vertical"
         onFinish={passwordSignIn}
       >
-        <FloatingLabelInput
-          formName="signup-form"
-          name="email"
-          rules={[
-            {
-              required: true,
-              message: "Please input your email!",
-            },
-            { type: "email", message: "Invalid email format" },
-          ]}
-          floatingLabelText="E-mail"
-          prefix={<MailOutlined />}
-          size="large"
-          inputType="email"
-        />
 
-        <FloatingLabelInput
-          formName="signup-form"
-          size="large"
-          name="password"
-          rules={[
-            {
-              required: true,
-              message: "Please input your Password!",
-            },
-          ]}
-          floatingLabelText="Password"
-          prefix={<LockOutlined />}
-          inputType="password"
-        />
+        {passwordLogin && <>
+          <FloatingLabelInput
+            formName="signup-form"
+            name="email"
+            rules={[
+              {
+                required: true,
+                message: "Please input your email!",
+              },
+              { type: "email", message: "Invalid email format" },
+            ]}
+            floatingLabelText="E-mail"
+            prefix={<MailOutlined />}
+            size="large"
+            inputType="email"
+          />
+          <FloatingLabelInput
+            formName="signup-form"
+            size="large"
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Password!",
+              },
+            ]}
+            floatingLabelText="Password"
+            prefix={<LockOutlined />}
+            inputType="password"
+          />
+        </>}
+
 
         <div className="text-center">
-          <div className="mb-4">
+          {passwordLogin && <div className="mb-4">
             <Button type="primary" className="w-full" htmlType="submit" size="large" loading={loading}>
               Login
             </Button>
-          </div>
+          </div>}
           {ssoAuthLink && (
             <div className="mb-4">
-              <Button href={ssoAuthLink} size="large" className="w-full">
+              {typeof ssoAuthLink === "string" ? <Button href={ssoAuthLink} size="large" className="w-full">
                 Continue with SSO
-              </Button>
+              </Button> : <Button onClick={ssoAuthLink.onClick} href={ssoAuthLink.link} size="large" className="w-full">
+                {ssoAuthLink.title || "Continue with SSO"}
+              </Button>}
             </div>
           )}
-          <div>
+          {passwordLogin && <div>
             <a onClick={() => setShowPasswordResetForm(true)}>Forgot password?</a>
-          </div>
+          </div>}
           {supportOauth && (
             <>
               <div className="mb-4 mt-4">Or sign in with</div>

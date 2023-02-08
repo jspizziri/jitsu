@@ -9,6 +9,6 @@ export default function SignupPage() {
       ssoAuthLink={services.userService.getSSOAuthLink()}
       login={false}
       useCloudHero={services.userService.getLoginFeatures().oauth}
-    />
+      passwordLogin={services.userService.getLoginFeatures().password} />
   )
 }

@@ -54,6 +54,7 @@ module.exports = {
           ANALYTICS_KEYS: JSON.stringify(process.env.ANALYTICS_KEYS || null),
           APP_PATH: JSON.stringify(process.env.APP_PATH || ""),
           FIREBASE_CONFIG: JSON.stringify(process.env.FIREBASE_CONFIG || null),
+          AUTH0_CONFIG: JSON.stringify(process.env.AUTH0_CONFIG || null),
           BILLING_API_BASE_URL: JSON.stringify(process.env.BILLING_API_BASE_URL || null),
           OAUTH_BACKEND_API_BASE: JSON.stringify(process.env.OAUTH_BACKEND_API_BASE || null),
           SLACK_API_URL: JSON.stringify(process.env.SLACK_API_URL || null),

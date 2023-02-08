@@ -1,5 +1,5 @@
 import { JSON_FORMAT } from "./model"
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
+import axios, { AxiosRequestConfig } from "axios"
 import * as uuid from "uuid"
 import AnalyticsService from "./analytics"
 import { BackendUserService } from "./UserServiceBackend"
@@ -15,7 +15,8 @@ import { IOauthService, OauthService } from "./oauth"
 import { Project, ProjectPermission, ProjectWithPermissions } from "../../generated/conf-openapi"
 import { createProjectService, ProjectService } from "./ProjectService"
 import { FirebaseUserService } from "./UserServiceFirebase"
-import { UserSettingsService, UserSettingsLocalService, Settings } from "./UserSettingsService"
+import { Settings, UserSettingsLocalService, UserSettingsService } from "./UserSettingsService"
+import { Auth0UserService } from "./UserServiceAuth0"
 
 export interface IApplicationServices {
   init(): Promise<void>
@@ -72,13 +73,18 @@ export default class ApplicationServices implements IApplicationServices {
     this._features = configuration
     this._analyticsService.configure(this._features)
 
-    if (configuration.authorization == "redis" || !this._applicationConfiguration.firebaseConfig) {
+    if (configuration.authorization == "auth0" || process.env.AUTH0_CONFIG) {
+      this._userService = new Auth0UserService(
+        process.env.AUTH0_CONFIG ? JSON.parse(process.env.AUTH0_CONFIG) : configuration.authConfig,
+      )
+
+    } else if (configuration.authorization == "redis" || !this._applicationConfiguration.firebaseConfig) {
       this._userService = new BackendUserService(
         this._backendApiClient,
         this._storageService,
         configuration.smtp,
         this._features.ssoAuthLink,
-        this._applicationConfiguration.backendApiBase
+        this._applicationConfiguration.backendApiBase,
       )
     } else if (configuration.authorization == "firebase") {
       this._userService = new FirebaseUserService(
@@ -303,7 +309,12 @@ export type FeatureSettings = {
   /**
    * Authorization type
    */
-  authorization: "redis" | "sso" | "firebase"
+  authorization: "redis" | "sso" | "firebase" | "auth0"
+
+  /**
+   * Auth config specific for authorization type
+   */
+  authConfig?: any
 
   /**
    * Link for SSO authorization

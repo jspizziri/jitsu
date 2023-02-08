@@ -123,7 +123,7 @@ export const JitsuWrapper: React.FC<PropsWithChildren<{host?: string, identifyHo
     return <>{children}</>
   } else {
     return (
-      <JitsuProvider options={{ host, autoPageTracking: { reactRouter: useLocation }, before: identifyHook }}>
+      <JitsuProvider options={{ host, autoPageTracking: { reactRouter: useLocation as any }, before: identifyHook }}>
         {children}
       </JitsuProvider>
     )
