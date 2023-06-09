@@ -1,14 +1,19 @@
 import { AnalyticsServerEvent } from "./analytics";
-import { RequestOptions } from "http";
 
-export type SetOpts = { ttlMs?: number } | { ttlSec?: number };
+export type StoreOpts = {
+  scope?: "workspace" | "connection";
+};
+
+export type SetOpts = ({ ttlMs?: number } | { ttlSec?: number }) & StoreOpts;
 
 /**
  * A key value store that exposed to a function
  */
 interface Store {
-  get(key: string): Promise<any>;
-  del(key: string): Promise<void>;
+  get(key: string, opts?: StoreOpts): Promise<any>;
+
+  del(key: string, opts?: StoreOpts): Promise<void>;
+
   set(key: string, value: any, opts?: SetOpts): Promise<void>;
 }
 
@@ -43,7 +48,6 @@ export type FetchResponse = {
 export type FetchOpts = {
   method?: string;
   headers?: Record<string, string>;
-  agent?: RequestOptions["agent"] | ((parsedUrl: URL) => RequestOptions["agent"]);
   body?: string;
 };
 export type FunctionContext = {

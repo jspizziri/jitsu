@@ -29,9 +29,7 @@ export function createFullContext(
         body: init?.body,
         headers: init?.headers ? hideSensitiveHeaders(init.headers) : undefined,
       };
-      if (!init?.agent) {
-        init = { ...init, agent: (url.startsWith("https://") ? httpsAgent : httpAgent)() };
-      }
+      init = { ...init, agent: (url.startsWith("https://") ? httpsAgent : httpAgent)() };
       let fetchResult: any = undefined;
       try {
         fetchResult = await nodeFetch(url, init as any);

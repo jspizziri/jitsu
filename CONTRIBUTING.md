@@ -13,6 +13,10 @@
 - `pnpm test` - Run tests
 - CI runs equivalent of `pnpm install && pnpm format:check && pnpm build && pnpm lint && pnpm test`.
 - `pnpm factory-reset` - if you have any problems
+- `pnpm build && pnpm release:canary` - release abd **publish** canary version of the all public packages (sdks so far - @jitsu/js, @jitsu/jitsu-react)
+  - **⚠️ALWAYS run `pnpm build` before releasing canary**
+- `pnpm build && pnpm release --version {x.y.x}` - dry-run of release and publish. Pick version from [here](https://www.npmjs.com/package/@jitsu/js?activeTab=versions)
+  - `pnpm build && pnpm release --version {x.y.x} ---publish`. Publish it if dry-run was successful
 
 
 # Releasing

@@ -20,7 +20,7 @@ import fs from "fs";
 import { AnalyticsServerEvent } from "@jitsu/protocols/analytics";
 import { createRedisLogger, FuncChain, runChain } from "./lib/functions-chain";
 import { getBuiltinFunction, mongoAnonymousEventsStore, UDFWrapper } from "@jitsu/core-functions";
-import { EventContext, JitsuFunction, Store, SystemContext } from "@jitsu/protocols/functions";
+import { EventContext, JitsuFunction, Store, StoreOpts, SystemContext } from "@jitsu/protocols/functions";
 import { redis } from "@jitsu-internal/console/lib/server/redis";
 import express from "express";
 import NodeCache from "node-cache";
@@ -177,15 +177,16 @@ export async function rotorMessageHandler(_message: string | undefined) {
     isErr => `events_log:functions.${isErr ? "error" : "all"}#${connection.id}`,
     false
   );
+  const defaultOpts: Required<StoreOpts> = { scope: "connection" };
   const store: Store = {
-    get: async (key: string) => {
+    get: async (key: string, opts = defaultOpts) => {
       const res = await redisClient.hget(`store:${connection.id}`, key);
       return res ? JSON.parse(res) : undefined;
     },
-    set: async (key: string, obj: any) => {
+    set: async (key: string, obj = defaultOpts) => {
       await redisClient.hset(`store:${connection.id}`, key, JSON.stringify(obj));
     },
-    del: async (key: string) => {
+    del: async (key: string, opts = defaultOpts) => {
       await redisClient.hdel(`store:${connection.id}`, key);
     },
   };
